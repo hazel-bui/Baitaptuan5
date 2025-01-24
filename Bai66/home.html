@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>Chi tiết Sinh viên</title>
+    <style>
+        tr:nth-child(n+2):hover {
+            background-color: blue;
+            color: white; 
+        }
+        tr:nth-child(n+2) {
+            background-color: white; 
+            color: black; 
+        }
+    </style>
+    <script>
+        var txt = `<sinhvien>
+                    <mssv>K123456789</mssv>
+                    <hoTen>Quách Thị Bán Bún Bò</hoTen>
+                    <ngaySinh>7/7/1997</ngaySinh>
+                    <gioiTinh>Nữ</gioiTinh>
+                   </sinhvien>`;
+
+        function capNhat() {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(txt, "text/xml");
+
+            var mssv = xmlDoc.getElementsByTagName("mssv")[0].childNodes[0].nodeValue;
+            var hoTen = xmlDoc.getElementsByTagName("hoTen")[0].childNodes[0].nodeValue;
+            var ngaySinh = xmlDoc.getElementsByTagName("ngaySinh")[0].childNodes[0].nodeValue;
+            var gioiTinh = xmlDoc.getElementsByTagName("gioiTinh")[0].childNodes[0].nodeValue;
+
+            document.getElementById("mssv").innerText = mssv;
+            document.getElementById("hoTen").innerText = hoTen;
+            document.getElementById("ngaySinh").innerText = ngaySinh;
+            document.getElementById("gioiTinh").innerText = gioiTinh;
+        }
+    </script>
+</head>
+<body>
+    <table border="1" style="background-color: rgb(246, 227, 84);">
+        <tr>
+            <th colspan="2">Chi tiết thông tin Sinh viên</th>
+        </tr>
+        <tr>
+            <td>Mã sinh viên</td>
+            <td id="mssv"></td>
+        </tr>
+        <tr>
+            <td>Họ và tên</td>
+            <td id="hoTen"></td>
+        </tr>
+        <tr>
+            <td>Ngày sinh</td>
+            <td id="ngaySinh"></td>
+        </tr>
+        <tr>
+            <td>Giới tính</td>
+            <td id="gioiTinh"></td>
+        </tr>
+    </table>
+    <button onclick="capNhat()">Cập nhật</button>
+</body>
+</html>

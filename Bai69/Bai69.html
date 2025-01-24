@@ -1,0 +1,109 @@
+<html>
+<head>
+  <title>Employee List</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        select {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Employee List</h1>
+
+    <button type="button" onclick="loadDoc()">Load Employee Data</button>
+    <br><br>
+
+    <table id="demo">
+        <thead>
+            <tr>
+                <th>
+                    <label for="titleDropdown">Chọn Title: </label>
+                </th>
+                <th colspan="2">
+                    <select id="titleDropdown" onchange="filterEmployees()">
+                        <option value="">--Select Title--</option>
+                        <option value="Architect">Architect</option>
+                        <option value="Engineer">Engineer</option>
+                        <option value="Teacher">Teacher</option>
+                    </select>
+                </th>
+            </tr>
+            <tr style="background-color: blue; color:azure">
+                <th>Mã Employee</th>
+                <th>Tên Employee</th>
+                <th>Phone Employee</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    
+    <script>
+        let xmlDoc; // Store the XML data globally
+
+        function loadDoc() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        xmlDoc = this.responseXML;
+                        populateTable(); // Populate the table initially
+                    } else {
+                        console.error("Error loading XML file. Status: " + this.status);
+                    }
+                }
+            };
+            xhttp.open("GET", "employee.xml", true);
+            xhttp.send();
+        }
+
+        function populateTable(title = "") {
+            if (!xmlDoc) {
+                console.error("XML data not loaded.");
+                return;
+            }
+
+            const tableBody = document.querySelector("#demo tbody");
+            tableBody.innerHTML = ""; // Clear existing table rows
+
+            const employees = xmlDoc.getElementsByTagName("employee");
+            for (let i = 0; i < employees.length; i++) {
+                const employeeTitle = employees[i].getAttribute("title");
+                if (title === "" || employeeTitle === title) {
+                    const row = document.createElement("tr");
+
+                    const idCell = document.createElement("td");
+                    idCell.textContent = employees[i].getAttribute("id");
+                    row.appendChild(idCell);
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = employees[i].getElementsByTagName("name")[0].textContent;
+                    row.appendChild(nameCell);
+
+                    const phoneCell = document.createElement("td");
+                    phoneCell.textContent = employees[i].getElementsByTagName("phone")[0].textContent;
+                    row.appendChild(phoneCell);
+
+                    tableBody.appendChild(row);
+                }
+            }
+        }
+
+        function filterEmployees() {
+            const selectedTitle = document.getElementById("titleDropdown").value;
+            populateTable(selectedTitle); // Filter table by selected title
+        }
+    </script>
+
+</body>
+</html>

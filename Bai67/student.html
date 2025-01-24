@@ -1,0 +1,122 @@
+<html>
+<head>
+    <title>Student</title>
+    <style>
+        tr:nth-child(n+1):hover {
+            background-color: rgb(240, 246, 50);
+        }
+        tr:nth-child(n+1) {
+            background-color: white;
+        }
+    </style>
+    <script>
+        var dataset = "<sinhviens>";
+        dataset += "<sinhvien>";
+        dataset += "<mssv>K123456789</mssv>";
+        dataset += "<hoTen>Quách Thị Bán Bún Bò</hoTen>";
+        dataset += "<ngaySinh>7/7/1997</ngaySinh>";
+        dataset += "<gioiTinh>Nữ</gioiTinh>";
+        dataset += "</sinhvien>";
+        dataset += "<sinhvien>";
+        dataset += "<mssv>K12345000</mssv>";
+        dataset += "<hoTen>Hồng Lâu Mộng</hoTen>";
+        dataset += "<ngaySinh>2/2/1992</ngaySinh>";
+        dataset += "<gioiTinh>Nam</gioiTinh>";
+        dataset += "</sinhvien>";
+        dataset += "<sinhvien>";
+        dataset += "<mssv>K1674000</mssv>";
+        dataset += "<hoTen>Hồ Văn Đồ</hoTen>";
+        dataset += "<ngaySinh>2/7/1997</ngaySinh>";
+        dataset += "<gioiTinh>Nam</gioiTinh>";
+        dataset += "</sinhvien>";
+        dataset += "</sinhviens>";
+    </script>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th colspan=4 style="background-color: rgb(248, 226, 103); color:black">Danh sách sinh viên</th>
+            </tr>
+            <tr style="background-color: green; color:white">
+                <th onclick="handleSort('mssv')">Mã Sinh Viên</th>
+                <th onclick="handleSort('hoTen')">Họ Tên</th>
+                <th onclick="handleSort('ngaySinh')">Ngày Sinh</th>
+                <th onclick="handleSort('gioiTinh')">Giới Tính</th>
+            </tr>
+        </thead>
+        <tbody id="tbodysinhvien">
+
+        </tbody>
+    </table>
+    <script>
+        let currentSortOrder = "asc";
+
+        function tai_danhsach_sinhvien(sortColumn = null, sortOrder = "asc") {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(dataset, "text/xml");
+            var students = Array.from(xmlDoc.getElementsByTagName("sinhvien"));
+
+            // Sort data if sortColumn is specified
+            if (sortColumn) {
+                students.sort((a, b) => {
+                    let valueA = a.getElementsByTagName(sortColumn)[0].childNodes[0].nodeValue;
+                    let valueB = b.getElementsByTagName(sortColumn)[0].childNodes[0].nodeValue;
+
+                    // Adjust comparison for numeric columns like "mssv" or "ngaySinh"
+                    if (sortColumn === "mssv" || sortColumn === "ngaySinh") {
+                        valueA = sortColumn === "ngaySinh" ? new Date(valueA) : parseInt(valueA.replace(/\D/g, ''));
+                        valueB = sortColumn === "ngaySinh" ? new Date(valueB) : parseInt(valueB.replace(/\D/g, ''));
+                    }
+
+                    return sortOrder === "asc" ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+                });
+            }
+
+            // Clear current table
+            document.getElementById("tbodysinhvien").innerHTML = "";
+
+            // Populate the table with sorted data
+            students.forEach(student => {
+                mssv = student.getElementsByTagName("mssv")[0].childNodes[0].nodeValue;
+                hoTen = student.getElementsByTagName("hoTen")[0].childNodes[0].nodeValue;
+                ngaySinh = student.getElementsByTagName("ngaySinh")[0].childNodes[0].nodeValue;
+                gioiTinh = student.getElementsByTagName("gioiTinh")[0].childNodes[0].nodeValue;
+
+                tbodysinhvien = document.getElementById("tbodysinhvien");
+                tr = document.createElement("tr");
+                tbodysinhvien.appendChild(tr);
+
+                tdmssv = document.createElement("td");
+                tdmssv.innerText = mssv;
+                tr.appendChild(tdmssv);
+
+                tdhoten = document.createElement("td");
+                tdhoten.innerText = hoTen;
+                tr.appendChild(tdhoten);
+
+                tdngaysinh = document.createElement("td");
+                tdngaysinh.innerText = ngaySinh;
+                tr.appendChild(tdngaysinh);
+
+                tdgioitinh = document.createElement("td");
+                tdgioitinh.innerText = gioiTinh;
+                tr.appendChild(tdgioitinh);
+
+                // Event listener for row click
+                tr.addEventListener("click", () => {
+                    window.location.href = `../Bai66/home.html`; // Redirect to the student's file
+                });
+            });
+        }
+
+        function handleSort(column) {
+            currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+            tai_danhsach_sinhvien(column, currentSortOrder);
+        }
+
+        // Initial load of data
+        tai_danhsach_sinhvien();
+    </script>
+</body>
+</html>
